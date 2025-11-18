@@ -74,54 +74,6 @@ Verbose mode for debugging:
 ./setup.sh -v
 ```
 
-## Project Structure
-
-```
-.
-├── ansible.cfg           # Ansible configuration
-├── playbook.yml          # Main Ansible playbook
-├── setup.sh              # Setup script with CLI interface
-├── inventory/
-│   └── hosts             # Ansible inventory file
-├── roles/                # Custom Ansible roles (if any)
-├── group_vars/           # Group-specific variables
-└── host_vars/            # Host-specific variables
-```
-
-## What Gets Configured
-
-The playbook configures the following:
-
-### Homebrew Packages
-- git
-- wget
-- curl
-- vim
-- python3
-- node
-
-### Applications (via Homebrew Cask)
-- Visual Studio Code
-- Google Chrome
-- iTerm2
-- Docker
-
-### System Preferences
-- Show all file extensions
-- Always show scroll bars
-- Disable window animations
-- Auto-hide Dock
-- Hide recent applications in Dock
-- Set Dock tile size
-
-## Customization
-
-You can customize the setup by editing `playbook.yml`:
-
-1. **Packages**: Modify the `homebrew_packages` list
-2. **Applications**: Modify the `homebrew_cask_packages` list
-3. **Preferences**: Add or modify tasks in the playbook
-
 ## Available Tags
 
 - `homebrew` - Homebrew installation and setup
@@ -137,8 +89,4 @@ You can customize the setup by editing `playbook.yml`:
 - macOS 11.0 or later
 - Internet connection (for downloading packages)
 - Administrator access (some tasks require sudo)
-
-## License
-
-This project is for personal use.
 

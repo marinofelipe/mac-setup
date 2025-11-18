@@ -1,0 +1,9 @@
+---
+# Default variables for homebrew_dependencies
+homebrew_packages:
+  - git
+  - wget
+  - curl
+  - vim
+  - python3
+  - node

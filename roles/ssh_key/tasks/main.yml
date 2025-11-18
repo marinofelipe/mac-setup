@@ -1,0 +1,31 @@
+---
+# tasks file for ssh_key
+- name: Check if SSH key exists
+  stat:
+    path: "{{ ansible_env.HOME }}/.ssh/id_rsa"
+  register: ssh_key_check
+  tags:
+    - ssh
+
+- name: Generate SSH key
+  command: ssh-keygen -t rsa -b 4096 -f {{ ansible_env.HOME }}/.ssh/id_rsa -N ""
+  when: not ssh_key_check.stat.exists
+  tags:
+    - ssh
+    - ssh_key
+
+- name: Set correct permissions on SSH directory
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh"
+    mode: '0700'
+    state: directory
+  tags:
+    - ssh
+
+- name: Set correct permissions on SSH private key
+  file:
+    path: "{{ ansible_env.HOME }}/.ssh/id_rsa"
+    mode: '0600'
+  when: ssh_key_check.stat.exists or not ssh_key_check.stat.exists
+  tags:
+    - ssh
