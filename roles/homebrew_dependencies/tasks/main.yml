@@ -19,6 +19,7 @@
     state: present
   loop: "{{ homebrew_packages }}"
   when: homebrew_check.stat.exists
+  become: no
   tags:
     - homebrew
     - packages

@@ -4,6 +4,7 @@
   homebrew_cask:
     name: visual-studio-code
     state: present
+  become: no
   tags:
     - vscode
     - applications

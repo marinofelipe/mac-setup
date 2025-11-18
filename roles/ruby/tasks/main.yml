@@ -4,6 +4,7 @@
   homebrew:
     name: ruby
     state: present
+  become: no
   tags:
     - ruby
     - homebrew
