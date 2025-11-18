@@ -1,0 +1,27 @@
+---
+# tasks file for mint_dependencies
+- name: Check if Mint is installed
+  stat:
+    path: /usr/local/bin/mint
+  register: mint_check
+  tags:
+    - mint
+
+- name: Install Mint via Homebrew
+  homebrew:
+    name: mint
+    state: present
+  when: not mint_check.stat.exists
+  become: no
+  tags:
+    - mint
+    - homebrew
+
+- name: Install Mint packages
+  command: mint install {{ item }}
+  loop: "{{ mint_packages | default([]) }}"
+  when: mint_check.stat.exists or mint_packages is defined
+  become: no
+  tags:
+    - mint
+    - packages

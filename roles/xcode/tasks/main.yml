@@ -1,0 +1,29 @@
+---
+# tasks file for xcode
+- name: Check if Xcode is installed
+  stat:
+    path: /Applications/Xcode.app
+  register: xcode_installed
+  tags:
+    - xcode
+
+- name: Display Xcode installation status
+  debug:
+    msg: "Xcode is {{ 'installed' if xcode_installed.stat.exists else 'not installed' }}"
+  tags:
+    - xcode
+
+- name: Select Xcode toolchain
+  command: xcode-select -s /Applications/Xcode.app/Contents/Developer
+  become: yes
+  when: xcode_installed.stat.exists
+  tags:
+    - xcode
+    - toolchain
+
+- name: Install additional Xcode components
+  command: xcodebuild -runFirstLaunch
+  when: xcode_installed.stat.exists
+  ignore_errors: yes
+  tags:
+    - xcode

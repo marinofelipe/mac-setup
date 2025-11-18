@@ -416,3 +416,8 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Ansible specific files
+*.retry
+/tmp/ansible_facts
+.ansible/

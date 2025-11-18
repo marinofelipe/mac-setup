@@ -1,0 +1,28 @@
+---
+# tasks file for ruby
+- name: Install Ruby via Homebrew
+  homebrew:
+    name: ruby
+    state: present
+  become: no
+  tags:
+    - ruby
+    - homebrew
+
+- name: Add Ruby to PATH
+  lineinfile:
+    path: "{{ ansible_env.HOME }}/.zprofile"
+    line: 'export PATH="/opt/homebrew/opt/ruby/bin:$PATH"'
+    create: yes
+  tags:
+    - ruby
+    - shell
+
+- name: Install bundler gem
+  gem:
+    name: bundler
+    state: present
+    user_install: no
+  tags:
+    - ruby
+    - gems
