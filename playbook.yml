@@ -1,0 +1,87 @@
+---
+- name: Configure macOS machine for development
+  hosts: local
+  gather_facts: yes
+
+  vars:
+    homebrew_packages:
+      - git
+      - wget
+      - curl
+      - vim
+      - python3
+      - node
+    
+    homebrew_cask_packages:
+      - visual-studio-code
+      - google-chrome
+      - iterm2
+      - docker
+
+  tasks:
+    - name: Ensure Homebrew is installed
+      stat:
+        path: /opt/homebrew/bin/brew
+      register: homebrew_check
+      tags:
+        - homebrew
+
+    - name: Display Homebrew installation status
+      debug:
+        msg: "Homebrew is {{ 'installed' if homebrew_check.stat.exists else 'not installed' }}"
+      tags:
+        - homebrew
+
+    - name: Install Homebrew packages
+      homebrew:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ homebrew_packages }}"
+      when: homebrew_check.stat.exists
+      tags:
+        - homebrew
+        - packages
+
+    - name: Install Homebrew Cask applications
+      homebrew_cask:
+        name: "{{ item }}"
+        state: present
+      loop: "{{ homebrew_cask_packages }}"
+      when: homebrew_check.stat.exists
+      tags:
+        - homebrew
+        - cask
+        - applications
+
+    - name: Configure macOS system preferences
+      osx_defaults:
+        domain: NSGlobalDomain
+        key: "{{ item.key }}"
+        type: "{{ item.type }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "AppleShowAllExtensions", type: "bool", value: "true" }
+        - { key: "AppleShowScrollBars", type: "string", value: "Always" }
+        - { key: "NSAutomaticWindowAnimationsEnabled", type: "bool", value: "false" }
+      tags:
+        - preferences
+        - macos
+
+    - name: Configure Dock preferences
+      osx_defaults:
+        domain: com.apple.dock
+        key: "{{ item.key }}"
+        type: "{{ item.type }}"
+        value: "{{ item.value }}"
+      loop:
+        - { key: "autohide", type: "bool", value: "true" }
+        - { key: "show-recents", type: "bool", value: "false" }
+        - { key: "tilesize", type: "int", value: "48" }
+      notify: restart_dock
+      tags:
+        - preferences
+        - dock
+
+  handlers:
+    - name: restart_dock
+      command: killall Dock
