@@ -1,0 +1,9 @@
+---
+- name: Install Zed Homebrew Cask
+  homebrew_cask:
+    name: zed
+    state: present
+  become: no
+  tags:
+    - zed
+    - applications
