@@ -1,5 +1,4 @@
 ---
-# tasks file for command_line_tools
 - name: Check if Command Line Tools are installed
   stat:
     path: /Library/Developer/CommandLineTools
@@ -17,7 +16,7 @@
 - name: Accept Xcode license
   command: xcodebuild -license accept
   become: yes
-  when: xcode_cli_tools.stat.exists
+  when: not xcode_cli_tools.stat.exists
   ignore_errors: yes
   tags:
     - command_line_tools

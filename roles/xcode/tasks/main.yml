@@ -1,29 +1,36 @@
 ---
-# tasks file for xcode
 - name: Check if Xcode is installed
-  stat:
-    path: /Applications/Xcode.app
+  shell: xcodes list | grep "Installed"
+  changed_when: xcode_installed.rc == 0
   register: xcode_installed
   tags:
     - xcode
 
 - name: Display Xcode installation status
   debug:
-    msg: "Xcode is {{ 'installed' if xcode_installed.stat.exists else 'not installed' }}"
+    msg: "Xcode is {{ 'installed' if xcode_installed else 'not installed' }}"
   tags:
     - xcode
-
-- name: Select Xcode toolchain
-  command: xcode-select -s /Applications/Xcode.app/Contents/Developer
+    
+- name: Install the latest Xcode release
+  when: not xcode_installed
+  command: xcodes install --latest --aria2 --experimental-unxip --select
   become: yes
-  when: xcode_installed.stat.exists
   tags:
     - xcode
     - toolchain
 
-- name: Install additional Xcode components
+- name: Select Xcode toolchain
+  when: xcode_installed
+  command: xcodes select
+  become: yes
+  tags:
+    - xcode
+    - toolchain
+
+- name: Install default Xcode components
   command: xcodebuild -runFirstLaunch
-  when: xcode_installed.stat.exists
+  when: not xcode_installed
   ignore_errors: yes
   tags:
     - xcode
