@@ -1,5 +1,4 @@
 ---
-# tasks file for mint_dependencies
 - name: Check if Mint is installed
   stat:
     path: /usr/local/bin/mint
