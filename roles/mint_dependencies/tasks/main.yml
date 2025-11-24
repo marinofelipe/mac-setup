@@ -11,7 +11,6 @@
     name: mint
     state: present
   when: not mint_check.stat.exists
-  become: no
   tags:
     - mint
     - homebrew
@@ -19,8 +18,7 @@
 - name: Install Mint packages
   command: mint install {{ item }}
   loop: "{{ mint_packages | default([]) }}"
-  when: mint_check.stat.exists or mint_packages is defined
-  become: no
+  when: mint_check.stat.exists or mint_packages is defined and xcode_installed
   tags:
     - mint
     - packages
