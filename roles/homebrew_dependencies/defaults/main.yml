@@ -9,6 +9,10 @@ homebrew_packages:
   - python3
   - node
   - npm
+  - git-delta
+  - lazygit
+  - onefetch
+  - aria2
   
   # GitHub
   - gh

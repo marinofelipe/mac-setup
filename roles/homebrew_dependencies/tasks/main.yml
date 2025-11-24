@@ -18,13 +18,11 @@
     state: latest
   loop: "{{ homebrew_packages }}"
   when: homebrew_check.stat.exists
-  become: no
   tags:
     - homebrew
     - packages
-    
+
 - name: Tap and brew install
-  become: false
   shell: |
     brew tap a7ex/homebrew-formulae && brew install xcresultparser
     brew tap FelixHerrmann/tap && brew install swift-package-list
