@@ -1,36 +1,52 @@
 ---
-- name: Check if Xcode is installed
+- name: Check if any Xcode is installed
   shell: xcodes list | grep "Installed"
-  changed_when: xcode_installed.rc == 0
+  changed_when: false
+  failed_when: false
   register: xcode_installed
-  tags:
-    - xcode
-
-- name: Display Xcode installation status
-  debug:
-    msg: "Xcode is {{ 'installed' if xcode_installed else 'not installed' }}"
+  when: xcode_version is not defined
   tags:
     - xcode
     
-- name: Install the latest Xcode release
-  when: not xcode_installed
-  command: xcodes install --latest --aria2 --experimental-unxip --select
-  become: yes
-  tags:
-    - xcode
-    - toolchain
+- name: Set fastlane session env
+  set_fact:
+    fastlane_session: "{{ lookup('env', 'FASTLANE_SESSION') }}"
+    verbosity: 2
 
-- name: Select Xcode toolchain
-  when: xcode_installed
-  command: xcodes select
-  become: yes
-  tags:
-    - xcode
-    - toolchain
-
-- name: Install default Xcode components
-  command: xcodebuild -runFirstLaunch
-  when: not xcode_installed
-  ignore_errors: yes
-  tags:
-    - xcode
+- block:
+    - name: Install and select the given Xcode version
+      when: xcode_version is defined
+      shell: "xcodes install {{ xcode_version }} --experimental-unxip --use-fastlane-auth --select"
+      become: yes
+      async: 1800 # 30 mins max
+      poll: 15 # check status every 15 seconds
+      environment:
+        FASTLANE_SESSION: "{{ fastlane_session }}"
+      tags:
+        - xcode
+        - toolchain
+    
+    - name: Install and select the latest Xcode release
+      when: xcode_version is not defined
+      shell: xcodes install --latest --experimental-unxip --use-fastlane-auth --select
+      become: yes
+      async: 1800 # 30 mins max
+      poll: 15 # check status every 15 seconds
+      environment:
+        FASTLANE_SESSION: "{{ fastlane_session }}"
+      tags:
+        - xcode
+        - toolchain
+        
+    - name: Install default Xcode components
+      command: xcodebuild -runFirstLaunch
+      ignore_errors: yes
+      tags:
+        - xcode
+  
+  when: fastlane_session
+  
+- name: Alert missing fastlane auth env
+  debug:
+    msg: "The `FASTLANE_AUTH` env var must be set to install Xcode"
+  when: not fastlane_session
