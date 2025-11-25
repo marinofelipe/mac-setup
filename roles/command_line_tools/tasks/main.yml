@@ -3,20 +3,14 @@
   stat:
     path: /Library/Developer/CommandLineTools
   register: xcode_cli_tools
-  tags:
-    - command_line_tools
 
 - name: Install Command Line Tools
   command: xcode-select --install
   when: not xcode_cli_tools.stat.exists
   ignore_errors: yes
-  tags:
-    - command_line_tools
 
 - name: Accept Xcode license
   command: xcodebuild -license accept
   become: yes
   when: not xcode_cli_tools.stat.exists
   ignore_errors: yes
-  tags:
-    - command_line_tools

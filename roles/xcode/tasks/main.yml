@@ -5,9 +5,7 @@
   failed_when: false
   register: xcode_installed
   when: xcode_version is not defined
-  tags:
-    - xcode
-    
+
 - name: Set fastlane session env
   set_fact:
     fastlane_session: "{{ lookup('env', 'FASTLANE_SESSION') }}"
@@ -22,10 +20,7 @@
       poll: 15 # check status every 15 seconds
       environment:
         FASTLANE_SESSION: "{{ fastlane_session }}"
-      tags:
-        - xcode
-        - toolchain
-    
+
     - name: Install and select the latest Xcode release
       when: xcode_version is not defined
       shell: xcodes install --latest --experimental-unxip --use-fastlane-auth --select
@@ -34,18 +29,13 @@
       poll: 15 # check status every 15 seconds
       environment:
         FASTLANE_SESSION: "{{ fastlane_session }}"
-      tags:
-        - xcode
-        - toolchain
-        
+
     - name: Install default Xcode components
       command: xcodebuild -runFirstLaunch
       ignore_errors: yes
-      tags:
-        - xcode
-  
+
   when: fastlane_session
-  
+
 - name: Alert missing fastlane auth env
   debug:
     msg: "The `FASTLANE_AUTH` env var must be set to install Xcode"
