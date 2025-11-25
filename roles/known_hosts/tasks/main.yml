@@ -1,28 +1,18 @@
 ---
-# tasks file for known_hosts
 - name: Ensure .ssh directory exists
   file:
-    path: "{{ ansible_env.HOME }}/.ssh"
+    path: ~/.ssh
     state: directory
-    mode: '0700'
+    mode: "0700"
   tags:
     - ssh
     - known_hosts
 
 - name: Add GitHub to known_hosts
-  known_hosts:
-    name: github.com
-    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
-    path: "{{ ansible_env.HOME }}/.ssh/known_hosts"
-  tags:
-    - ssh
-    - known_hosts
-
-- name: Add GitLab to known_hosts
-  known_hosts:
-    name: gitlab.com
-    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa gitlab.com') }}"
-    path: "{{ ansible_env.HOME }}/.ssh/known_hosts"
+  shell: |
+    if ! grep -q "^github.com" ~/.ssh/known_hosts; then
+      ssh-keyscan github.com >> ~/.ssh/known_hosts
+    fi
   tags:
     - ssh
     - known_hosts
