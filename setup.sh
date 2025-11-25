@@ -88,8 +88,10 @@ OPTIONS:
 
 EXAMPLES:
     ./setup.sh                              Run all tasks
-    ./setup.sh -t homebrew,packages         Run only Homebrew and package tasks
-    ./setup.sh -s applications              Skip application installation
+    ./setup.sh -t brew,dependencies         Run only Homebrew and dependencies
+    ./setup.sh -t git_config,ssh            Run only git and SSH configuration
+    ./setup.sh -t macos_defaults            Run only macOS system preferences
+    ./setup.sh -s xcode                     Skip Xcode installation
     ./setup.sh -c                           Dry-run mode
     ./setup.sh -v                           Verbose mode (level 1; Basic info: tasks, changes, skipped tasks)
     ./setup.sh -vvvvv                       Very verbose mode (Level 5; Internal Ansible debugging)

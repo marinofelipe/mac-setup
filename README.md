@@ -58,14 +58,14 @@ Use tags to run only specific parts:
 # Setup SSH and known hosts
 ./setup.sh -t ssh,known_hosts
 
-# Install Xcode and Mint dependencies
-./setup.sh -t xcode,mint
+# Skip Xcode and Mint dependencies
+./setup.sh -s xcode
 
-# Configure macOS system defaults
-./setup.sh -t macos_defaults
+# Skip configuring macOS system defaults
+./setup.sh -s macos_defaults
 
-# Setup Zed editor
-./setup.sh -t zed
+# Skip installing the Zed editor
+./setup.sh -s zed
 ```
 
 ## Available Tags
