@@ -4,61 +4,20 @@
 # Default variables for macos_defaults
 macos_defaults_settings:
   # Dock settings
-
-  # First wipe all apps from the Dock
-  - domain: com.apple.dock
-    key: persistent-apps
-    type: array
-    value: ""
-
-  # Add Finder to the Dock
-  - domain: com.apple.dock
-    key: persistent-apps
-    type: array
-    value: "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/Finder.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-
-  # Add Messages to the Dock
-  - domain: com.apple.dock
-    key: persistent-apps
-    type: array
-    value: "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/Messages.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-
-    # Add AppStore to the Dock
-  - domain: com.apple.dock
-    key: persistent-apps
-    type: array
-    value: "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/AppStore.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-
-    # Add Arc to the Dock
-  - domain: com.apple.dock
-    key: persistent-apps
-    type: array
-    value: "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/Arc.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-
-  # Add Warp to the Dock
-  - domain: com.apple.dock
-    key: persistent-apps
-    type: array
-    value: "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/Warp.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-
-  # Add Zed to the Dock
-  - domain: com.apple.dock
-    key: persistent-apps
-    type: array
-    value: "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/Zed.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-
-  # Add Xcode to the Dock
-  # TODO: Make it dynamically add the selected Xcode version (pass as input)
-  - domain: com.apple.dock
-    key: persistent-apps
-    type: array
-    value: "<dict><key>tile-data</key><dict><key>file-data</key><dict><key>_CFURLString</key><string>/Applications/Xcode-26.1.1.app</string><key>_CFURLStringType</key><integer>0</integer></dict></dict></dict>"
-
-  # Hide recents
   - domain: com.apple.dock
     key: show-recents
     type: bool
     value: false
+
+  - domain: com.apple.dock
+    key: tilesize
+    type: int
+    value: 72
+
+  - domain: com.apple.dock
+    key: autohide
+    type: bool
+    value: true
 
   # Finder settings
   # Show hidden files
@@ -115,3 +74,7 @@ macos_defaults_settings:
     key: NSGlobalDomain
     type: int
     value: 1
+
+# Finder is always there by default
+dock_apps:
+  ["Messages", "Apps", "App\\ Store", "Arc", "Warp", "Zed", "Xcode-26.1.1"]
