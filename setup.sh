@@ -79,18 +79,21 @@ macOS Setup Script
 Usage: ./setup.sh [OPTIONS]
 
 OPTIONS:
-    -h, --help          Display this help message
-    -t, --tags TAGS     Run only tasks with specific tags (comma-separated)
-    -s, --skip TAGS     Skip tasks with specific tags (comma-separated)
-    -c, --check         Run in check mode (dry-run)
-    -v, --verbose       Run with verbose output
+    -h, --help                  Display this help message
+    -t, --tags TAGS             Run only tasks with specific tags (comma-separated)
+    -s, --skip TAGS             Skip tasks with specific tags (comma-separated)
+    -c, --check                 Run in check mode (dry-run)
+    -v[vvvv]                    Run with verbose output (-v, -vv, -vvv, -vvvv, -vvvvv)
+    --xcode-version VERSION     Specify Xcode version to install (e.g., 26.0, --latest)
 
 EXAMPLES:
-    ./setup.sh                          Run all tasks
-    ./setup.sh -t homebrew,packages     Run only Homebrew and package tasks
-    ./setup.sh -s applications          Skip application installation
-    ./setup.sh -c                       Dry-run mode
-    ./setup.sh -v                       Verbose mode
+    ./setup.sh                              Run all tasks
+    ./setup.sh -t homebrew,packages         Run only Homebrew and package tasks
+    ./setup.sh -s applications              Skip application installation
+    ./setup.sh -c                           Dry-run mode
+    ./setup.sh -v                           Verbose mode (level 1; Basic info: tasks, changes, skipped tasks)
+    ./setup.sh -vvvvv                       Very verbose mode (Level 5; Internal Ansible debugging)
+    ./setup.sh --xcode-version --latest     Install the latest Xcode version
 
 EOF
 }
@@ -100,6 +103,8 @@ TAGS=""
 SKIP_TAGS=""
 CHECK_MODE=""
 VERBOSE=""
+XCODE_VERSION=""
+FASTLANE_SESSION_VAR=""
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -119,9 +124,13 @@ while [[ $# -gt 0 ]]; do
             CHECK_MODE="--check"
             shift
             ;;
-        -v|--verbose)
-            VERBOSE="-vvv"
+        -v|-vv|-vvv|-vvvv|-vvvvv)
+            VERBOSE="$1"
             shift
+            ;;
+        --xcode-version)
+            XCODE_VERSION="-e xcode_version=$2"
+            shift 2
             ;;
         *)
             print_error "Unknown option: $1"
@@ -145,6 +154,11 @@ main() {
     install_homebrew
     install_ansible
     
+    # Check for FASTLANE_SESSION environment variable
+    if [[ -n "$FASTLANE_SESSION" ]]; then
+        print_info "FASTLANE_SESSION environment variable detected."
+    fi
+    
     # Confirm before running
     print_info "Ready to configure your macOS machine."
     if [[ -n "$CHECK_MODE" ]]; then
@@ -156,17 +170,16 @@ main() {
     if [[ -n "$SKIP_TAGS" ]]; then
         print_info "Skipping tags: $SKIP_TAGS"
     fi
-    
-    read -p "Do you want to continue? (y/n): " -n 1 -r
-    echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        print_warning "Setup cancelled."
-        exit 0
+    if [[ -n "$XCODE_VERSION" ]]; then
+        print_info "Xcode version specified: ${XCODE_VERSION#-e xcode_version=}"
+    fi
+    if [[ -n "$VERBOSE" ]]; then
+        print_info "Verbose level: $VERBOSE"
     fi
     
     # Run Ansible playbook
     print_info "Running Ansible playbook..."
-    if ansible-playbook playbook.yml $TAGS $SKIP_TAGS $CHECK_MODE $VERBOSE; then
+    if FASTLANE_SESSION=$FASTLANE_SESSION ansible-playbook playbook.yml $TAGS $SKIP_TAGS $CHECK_MODE $VERBOSE $XCODE_VERSION; then
         print_info "macOS setup completed successfully!"
     else
         print_error "Setup failed. Please check the errors above."

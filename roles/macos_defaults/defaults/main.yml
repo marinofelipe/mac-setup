@@ -1,0 +1,80 @@
+---
+# Reference: https://github.com/pietrocaselani/setup-my-mac/blob/master/roles/osx-defaults/files/macos_defaults.sh
+
+# Default variables for macos_defaults
+macos_defaults_settings:
+  # Dock settings
+  - domain: com.apple.dock
+    key: show-recents
+    type: bool
+    value: false
+
+  - domain: com.apple.dock
+    key: tilesize
+    type: int
+    value: 72
+
+  - domain: com.apple.dock
+    key: autohide
+    type: bool
+    value: true
+
+  # Finder settings
+  # Show hidden files
+  - domain: com.apple.finder
+    key: AppleShowAllFiles
+    type: bool
+    value: true
+
+  - domain: com.apple.finder
+    key: ShowPathbar
+    type: bool
+    value: true
+
+  - domain: com.apple.finder
+    key: ShowStatusBar
+    type: bool
+    value: true
+
+  - domain: NSGlobalDomain
+    key: AppleShowAllExtensions
+    type: bool
+    value: true
+
+  # Menu bar settings
+  - domain: com.apple.menuextra.battery
+    key: ShowPercent
+    type: bool
+    value: true
+
+  # Login Items
+  - domain: com.apple.menuextra.battery
+    key: ShowPercent
+    type: bool
+    value: true
+
+  # Keyboard settings
+  - domain: NSGlobalDomain
+    key: KeyRepeat
+    type: int
+    value: 2
+
+  - domain: NSGlobalDomain
+    key: InitialKeyRepeat
+    type: int
+    value: 15
+
+  # Trackpad settings
+  - domain: com.apple.driver.AppleBluetoothMultitouch.trackpad
+    key: Clicking
+    type: bool
+    value: true
+
+  - domain: com.apple.mouse.tapBehavior
+    key: NSGlobalDomain
+    type: int
+    value: 1
+
+# Finder is always there by default
+dock_apps:
+  ["Messages", "Apps", "App\\ Store", "Arc", "Warp", "Zed", "Xcode-26.1.1"]

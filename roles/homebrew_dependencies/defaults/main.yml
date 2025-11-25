@@ -1,9 +1,27 @@
 ---
 # Default variables for homebrew_dependencies
 homebrew_packages:
+  # base
   - git
   - wget
   - curl
   - vim
   - python3
   - node
+  - npm
+  - git-delta
+  - lazygit
+  - onefetch
+  - aria2
+  - dockutil
+
+  # GitHub
+  - gh
+
+  # Xcode
+  - xcodesorg/made/xcodes
+  - aria2
+  - graphviz
+
+  # Swift
+  - mint

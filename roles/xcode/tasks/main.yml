@@ -1,29 +1,42 @@
 ---
-# tasks file for xcode
-- name: Check if Xcode is installed
-  stat:
-    path: /Applications/Xcode.app
+- name: Check if any Xcode is installed
+  shell: xcodes list | grep "Installed"
+  changed_when: false
+  failed_when: false
   register: xcode_installed
-  tags:
-    - xcode
+  when: xcode_version is not defined
 
-- name: Display Xcode installation status
+- name: Set fastlane session env
+  set_fact:
+    fastlane_session: "{{ lookup('env', 'FASTLANE_SESSION') }}"
+    verbosity: 2
+
+- block:
+    - name: Install and select the given Xcode version
+      when: xcode_version is defined
+      shell: "xcodes install {{ xcode_version }} --experimental-unxip --use-fastlane-auth --select"
+      become: yes
+      async: 1800 # 30 mins max
+      poll: 15 # check status every 15 seconds
+      environment:
+        FASTLANE_SESSION: "{{ fastlane_session }}"
+
+    - name: Install and select the latest Xcode release
+      when: xcode_version is not defined
+      shell: xcodes install --latest --experimental-unxip --use-fastlane-auth --select
+      become: yes
+      async: 1800 # 30 mins max
+      poll: 15 # check status every 15 seconds
+      environment:
+        FASTLANE_SESSION: "{{ fastlane_session }}"
+
+    - name: Install default Xcode components
+      command: xcodebuild -runFirstLaunch
+      ignore_errors: yes
+
+  when: fastlane_session
+
+- name: Alert missing fastlane auth env
   debug:
-    msg: "Xcode is {{ 'installed' if xcode_installed.stat.exists else 'not installed' }}"
-  tags:
-    - xcode
-
-- name: Select Xcode toolchain
-  command: xcode-select -s /Applications/Xcode.app/Contents/Developer
-  become: yes
-  when: xcode_installed.stat.exists
-  tags:
-    - xcode
-    - toolchain
-
-- name: Install additional Xcode components
-  command: xcodebuild -runFirstLaunch
-  when: xcode_installed.stat.exists
-  ignore_errors: yes
-  tags:
-    - xcode
+    msg: "The `FASTLANE_AUTH` env var must be set to install Xcode"
+  when: not fastlane_session

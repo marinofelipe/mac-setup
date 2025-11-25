@@ -1,0 +1,21 @@
+---
+- name: Cleanup Dock
+  command: dockutil --remove all
+
+- name: Configure Dock
+  command: dockutil --add /Applications/{{ item }}.app --section apps
+  loop: "{{ dock_apps }}"
+
+- name: Configure macOS defaults
+  community.general.osx_defaults:
+    domain: "{{ item.domain }}"
+    key: "{{ item.key }}"
+    type: "{{ item.type }}"
+    value: "{{ item.value }}"
+    state: present
+  loop: "{{ macos_defaults_settings }}"
+  become: yes
+  become_user: felipemarino
+
+- name: Restart the Dock
+  shell: killall Dock

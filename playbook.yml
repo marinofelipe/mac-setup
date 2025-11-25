@@ -4,57 +4,23 @@
   gather_facts: yes
 
   roles:
-    - command_line_tools
-    - homebrew_dependencies
-    - mint_dependencies
-    - ruby
-    - xcode
-    - vscode
-    - ssh_key
-    - known_hosts
-
-  tasks:
-    - name: Install Homebrew Cask applications
-      homebrew_cask:
-        name: "{{ item }}"
-        state: present
-      loop:
-        - google-chrome
-        - iterm2
-        - docker
-      tags:
-        - cask
-        - applications
-
-    - name: Configure macOS system preferences
-      osx_defaults:
-        domain: NSGlobalDomain
-        key: "{{ item.key }}"
-        type: "{{ item.type }}"
-        value: "{{ item.value }}"
-      loop:
-        - { key: "AppleShowAllExtensions", type: "bool", value: "true" }
-        - { key: "AppleShowScrollBars", type: "string", value: "Always" }
-        - { key: "NSAutomaticWindowAnimationsEnabled", type: "bool", value: "false" }
-      tags:
-        - preferences
-        - macos
-
-    - name: Configure Dock preferences
-      osx_defaults:
-        domain: com.apple.dock
-        key: "{{ item.key }}"
-        type: "{{ item.type }}"
-        value: "{{ item.value }}"
-      loop:
-        - { key: "autohide", type: "bool", value: "true" }
-        - { key: "show-recents", type: "bool", value: "false" }
-        - { key: "tilesize", type: "int", value: "48" }
-      notify: restart_dock
-      tags:
-        - preferences
-        - dock
-
-  handlers:
-    - name: restart_dock
-      command: killall Dock
+    - role: command_line_tools
+      tags: [command_line_tools, tooling]
+    - role: homebrew_dependencies
+      tags: [brew, dependencies]
+    - role: ruby
+      tags: [ruby, dependencies]
+    - role: xcode
+      tags: [xcode, toolchain]
+    - role: mint_dependencies # needs Xcode
+      tags: [mint, dependencies]
+    - role: zed
+      tags: [zed, applications]
+    - role: git_config
+      tags: [git_config, tooling]
+    - role: ssh
+      tags: [ssh, tooling]
+    - role: known_hosts
+      tags: [known_hosts, tooling]
+    - role: macos_defaults
+      tags: [macos_defaults, macos]

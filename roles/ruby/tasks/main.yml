@@ -1,28 +1,25 @@
 ---
-# tasks file for ruby
-- name: Install Ruby via Homebrew
+- name: Install rbenv
   homebrew:
-    name: ruby
+    name: rbenv
     state: present
-  become: no
   tags:
     - ruby
     - homebrew
 
-- name: Add Ruby to PATH
-  lineinfile:
-    path: "{{ ansible_env.HOME }}/.zprofile"
-    line: 'export PATH="/opt/homebrew/opt/ruby/bin:$PATH"'
-    create: yes
+- name: Setup shell for rbenv
+  shell: eval "$(rbenv init - zsh)"
   tags:
     - ruby
-    - shell
 
-- name: Install bundler gem
-  gem:
-    name: bundler
-    state: present
-    user_install: no
+- name: Check if the latest ruby is installed
+  shell: rbenv install -l | grep -q "$(rbenv install -l | grep -v '^[[:space:]]*[0-9]' | tail -n 1)"
+  register: latest_ruby_installed
   tags:
     - ruby
-    - gems
+
+- name: Install the latest ruby
+  shell: rbenv install $(rbenv install -l | grep -v '^[[:space:]]*[0-9]' | tail -n 1)
+  when: not latest_ruby_installed
+  tags:
+    - ruby

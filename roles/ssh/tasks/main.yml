@@ -1,0 +1,58 @@
+---
+- name: Check if SSH key exists
+  stat:
+    path: ~/.ssh/id_rsa
+  register: ssh_key_check
+  tags:
+    - ssh
+
+- name: Generate SSH key
+  command: ssh-keygen -t rsa -b 4096 -f ~/.ssh/id_rsa -N ""
+  when: not ssh_key_check.stat.exists
+  tags:
+    - ssh
+    - ssh_key
+
+- name: Set correct permissions on SSH directory
+  file:
+    path: ~/.ssh
+    mode: "0700"
+    state: directory
+  tags:
+    - ssh
+
+- name: Set correct permissions on SSH private key
+  file:
+    path: ~/.ssh/id_rsa
+    mode: "0600"
+  when: ssh_key_check.stat.exists or not ssh_key_check.stat.exists
+  tags:
+    - ssh
+
+- name: Add SSH key to Keychain
+  shell: ssh-add --apple-use-keychain ~/.ssh/id_rsa
+
+- name: Add SSH config for all hosts
+  blockinfile:
+    path: ~/.ssh/config
+    create: yes
+    mode: "0600"
+    block: |
+      Host *
+          UseKeychain yes
+          AddKeysToAgent yes
+          IdentityFile ~/.ssh/id_rsa
+
+- name: Create the allowed signers file for gpg signing
+  shell: touch ~/.ssh/allowed_signers
+  tags:
+    - ssh
+
+- name: Add the SSH public key to allowed_signers if not present
+  lineinfile:
+    path: ~/.ssh/allowed_signers
+    line: "felipemarino91@gmail.com {{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    create: yes
+    state: present
+  tags:
+    - ssh

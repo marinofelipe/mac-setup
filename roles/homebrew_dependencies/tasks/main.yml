@@ -1,25 +1,22 @@
 ---
-# tasks file for homebrew_dependencies
 - name: Ensure Homebrew is installed
   stat:
     path: /opt/homebrew/bin/brew
   register: homebrew_check
-  tags:
-    - homebrew
 
 - name: Display Homebrew installation status
   debug:
     msg: "Homebrew is {{ 'installed' if homebrew_check.stat.exists else 'not installed' }}"
-  tags:
-    - homebrew
 
 - name: Install Homebrew packages
   homebrew:
     name: "{{ item }}"
-    state: present
+    state: latest
   loop: "{{ homebrew_packages }}"
   when: homebrew_check.stat.exists
-  become: no
-  tags:
-    - homebrew
-    - packages
+
+- name: Tap and brew install
+  shell: |
+    brew tap a7ex/homebrew-formulae && brew install xcresultparser
+    brew tap FelixHerrmann/tap && brew install swift-package-list
+    brew tap tuist/tuist && brew install --formula tuist

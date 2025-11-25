@@ -1,0 +1,17 @@
+---
+- name: Run git config script
+  script: ../files/git-config-setup.sh
+  become: yes
+  become_user: felipemarino
+
+- name: Ensure scripts dir exists
+  file:
+    path: ~/scripts/
+    state: directory
+    mode: "0755"
+
+- name: Copy the git aliases script
+  copy:
+    src: files/git-aliases.sh
+    dest: ~/scripts/git-aliases.sh
+    mode: "0644"
