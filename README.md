@@ -1,67 +1,31 @@
 # mac-setup
 
-Configures macOS with my preferences and dev environment using Ansible
+This project automates my personal macOS development environment setup using Ansible. Feel free to use it as inspiration for your own setup.
 
-## Overview
+**Note:** This is configured for my specific needs. It could be improved by parameterizing settings to make it more reusable for others.
 
-This project automates the setup and configuration of macOS machines for development work. It uses Ansible to manage system preferences, install applications, and configure the development environment.
+## What It Installs & Configures
+
+- **Command Line Tools** - Xcode command line tools
+- **Homebrew packages** - git, wget, curl, vim, python3, node, npm, git-delta, lazygit, onefetch, aria2, gh, mint, graphviz, and more
+- **Xcode** - iOS/macOS development toolchain
+- **Mint packages** - Swift tools (xcparse, spmgraph)
+- **Ruby** - Ruby environment for development
+- **Zed** - Code editor configuration
+- **Git** - Global git configuration and SSH signing setup
+- **SSH** - SSH keys and known hosts
+- **macOS defaults** - System preferences (Dock, Finder, keyboard, trackpad, screenshots)
 
 ## Prerequisites
 
 - macOS (Intel or Apple Silicon)
-- Bash shell
-
-The setup script will automatically install:
-- Homebrew (if not already installed)
-- Ansible (via Homebrew, if not already installed)
-
-## Quick Start
-
-1. Clone this repository:
-```bash
-git clone https://github.com/marinofelipe/mac-setup.git
-cd mac-setup
-```
-
-2. Run the setup script:
-```bash
-./setup.sh
-```
-
-The script will guide you through the installation process with interactive prompts.
+- The setup script will automatically install Homebrew and Ansible if needed
 
 ## Usage
 
-### Basic Usage
-
-Run all configuration tasks:
+Run the full setup:
 ```bash
 ./setup.sh
-```
-
-### Advanced Options
-
-```bash
-./setup.sh [OPTIONS]
-```
-
-**Options:**
-- `-h, --help` - Display help message
-- `-t, --tags TAGS` - Run only tasks with specific tags (comma-separated)
-- `-s, --skip TAGS` - Skip tasks with specific tags (comma-separated)
-- `-c, --check` - Run in check mode (dry-run, no changes made)
-- `-v, --verbose` - Run with verbose output
-
-**Examples:**
-
-Run only Homebrew and package installation:
-```bash
-./setup.sh -t homebrew,packages
-```
-
-Skip application installation:
-```bash
-./setup.sh -s applications
 ```
 
 Dry-run to see what would change:
@@ -69,24 +33,58 @@ Dry-run to see what would change:
 ./setup.sh -c
 ```
 
-Verbose mode for debugging:
+Run with verbose output:
 ```bash
 ./setup.sh -v
 ```
 
+Install specific Xcode version (defaults to the latest):
+```bash
+./setup.sh --xcode-version 16.0
+./setup.sh --xcode-version --latest
+```
+
+## Run Specific Roles
+
+Use tags to run only specific parts:
+
+```bash
+# Install only Homebrew packages
+./setup.sh -t brew
+
+# Configure only git
+./setup.sh -t git_config
+
+# Setup SSH and known hosts
+./setup.sh -t ssh,known_hosts
+
+# Install Xcode and Mint dependencies
+./setup.sh -t xcode,mint
+
+# Configure macOS system defaults
+./setup.sh -t macos_defaults
+
+# Setup Zed editor
+./setup.sh -t zed
+```
+
 ## Available Tags
 
-- `homebrew` - Homebrew installation and setup
-- `packages` - Package installation
-- `cask` - Cask application installation
-- `applications` - Application installation
-- `preferences` - System preferences configuration
-- `macos` - macOS-specific settings
-- `dock` - Dock preferences
+- `command_line_tools` - Xcode command line tools
+- `brew` - Homebrew packages
+- `ruby` - Ruby environment
+- `xcode` - Xcode installation
+- `mint` - Mint Swift packages
+- `zed` - Zed editor configuration
+- `git_config` - Git configuration
+- `ssh` - SSH setup
+- `known_hosts` - SSH known hosts
+- `macos_defaults` - macOS system preferences
+- `tooling` - All tooling setup (command_line_tools, git_config, ssh, known_hosts)
+- `dependencies` - All dependencies (brew, ruby, mint)
+- `applications` - All applications (zed, xcode)
+- `macos` - macOS settings (macos_defaults)
 
-## Requirements
-
-- macOS 11.0 or later
-- Internet connection (for downloading packages)
-- Administrator access (some tasks require sudo)
-
+# Acknowledgments
+- It uses most of @unnamedd's cool [git config setup](https://gist.github.com/unnamedd/2794781)
+- The idea to create my own macOS setup dates back to when @pietrocaselani first showed me [his own](https://github.com/pietrocaselani/setup-my-mac)

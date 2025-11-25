@@ -11,7 +11,7 @@
     - role: ruby
       tags: [ruby, dependencies]
     - role: xcode
-      tags: [xcode, toolchain]
+      tags: [xcode, applications]
     - role: mint_dependencies # needs Xcode
       tags: [mint, dependencies]
     - role: zed
