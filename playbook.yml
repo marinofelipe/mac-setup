@@ -22,3 +22,5 @@
       tags: [ssh, tooling]
     - role: known_hosts
       tags: [known_hosts, tooling]
+    - role: macos_defaults
+      tags: [macos_defaults, macos]
