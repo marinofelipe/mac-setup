@@ -1,0 +1,5 @@
+---
+- name: Run git config script
+  script: ../files/git-config-setup.sh
+  become: yes
+  become_user: felipemarino
