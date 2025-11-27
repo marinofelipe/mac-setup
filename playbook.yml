@@ -16,6 +16,8 @@
       tags: [mint, dependencies]
     - role: zed
       tags: [zed, applications]
+    - role: gemini
+      tags: [ai, tooling]
     - role: git_config
       tags: [git_config, tooling]
     - role: ssh
