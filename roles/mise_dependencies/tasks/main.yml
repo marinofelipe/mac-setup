@@ -1,0 +1,9 @@
+---
+- name: Install mise
+  shell: curl https://mise.run | sh
+
+- name: Activate mise
+  shell: echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
+
+- name: Use Tuist Argus (for AI Xcode build analyzes)
+  shell: mise use -g github:tuist/argus
