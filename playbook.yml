@@ -14,6 +14,8 @@
       tags: [xcode, applications]
     - role: mint_dependencies # needs Xcode
       tags: [mint, dependencies]
+    - role: mise_dependencies
+      tags: [mise, dependencies]
     - role: zed
       tags: [zed, applications]
     - role: gemini
